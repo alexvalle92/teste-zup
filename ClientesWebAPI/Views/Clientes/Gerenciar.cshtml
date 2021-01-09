@@ -1,1 +1,84 @@
-﻿
+﻿@using ClientesWebAPI.Entity
+@model ClientesModel
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1>Clientes</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Gerenciar</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                        <th scope="col">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (Cliente row in Model.ListaClientes)
+                        {
+                                        <tr>
+                                            <th scope="row">@row.Id</th>
+                                            <td>@row.Nome</td>
+                                            <td>@row.Sobrenome</td>
+                                            <td>@row.Email</td>
+                                            <td><a href="@Url.Action("Editar", "Clientes", new { idCliente = row.Id })"><i class="fa fa-pencil-alt" ></i></a> &nbsp; <a href="#"><i class="fa fa-trash" onclick="DoExcluirCliente(@row.Id)"></i></a></td>
+                                        </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+            <a href="@Url.Action("Adicionar", "Clientes")" class="btn btn-primary"><i class="fa fa-plus"></i> Adicionar Cliente</a>
+        </div>
+        <!-- /.card-footer-->
+    </div>
+
+</section>
+<!-- /.content -->
+<script>
+
+    function DoExcluirCliente(idCliente) {
+        @*'@Url.Content("~/producao/materiaprima")'*@
+        var data = JSON.stringify({  });
+        ChamadaAjax('@Url.Content("~/api/Clientes/")' + idCliente, data, "DELETE", ReturnDoExcluirCliente);
+    }
+
+    function ReturnDoExcluirCliente(dados) {
+        alert("Registro excluido com sucesso");
+    }
+
+    function DoEditar(idCliente) {
+        alert("Retornou " + idCliente);
+        @*'@Url.Content("~/producao/materiaprima")'*@
+        
+    }
+
+</script>
+

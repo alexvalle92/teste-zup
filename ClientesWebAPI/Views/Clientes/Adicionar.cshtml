@@ -1,0 +1,82 @@
+﻿@using ClientesWebAPI.Entity
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1>Clientes</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Adicionar</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="nome" class="col-form-label">Nome:</label>
+                    <input type="text" class="form-control" id="nome">
+                </div>
+                <div class="col-sm-6">
+                    <label for="sobrenome" class="col-form-label">Sobrenome:</label>
+                    <input type="text" class="form-control" id="sobrenome">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="email" class="col-form-label">Email:</label>
+                    <input type="email" class="form-control" id="email">
+                </div>
+                <div class="col-sm-6">
+                    <label for="senha" class="col-form-label">Senha:</label>
+                    <input type="password" class="form-control" id="senha">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+            <button class="btn btn-primary" onclick="DoAdicionarCliente()"><i class="fa fa-plus"></i> Adicionar Cliente</button>
+        </div>
+        <!-- /.card-footer-->
+    </div>
+
+</section>
+<!-- /.content -->
+<script>
+
+    function DoAdicionarCliente() {
+        var nome = document.getElementById("nome");
+        var sobrenome = document.getElementById("sobrenome");
+        var email = document.getElementById("email");
+        var senha = document.getElementById("senha");
+
+        if (nome.value != "" && sobrenome.value != "" && email.value != "" && senha.value != "") {
+            var data = JSON.stringify({ Nome: nome.value, Sobrenome: sobrenome.value, Email: email.value, Senha: senha.value });
+            ChamadaAjax('@Url.Content("~/api/Clientes")', data, "POST", ReturnDoAdicionarCliente);
+        } else {
+            alert("Preencha todos os campos");
+        }
+
+        function ReturnDoAdicionarCliente() {
+            alert("Retornou");
+        }
+        
+    }
+
+</script>
+

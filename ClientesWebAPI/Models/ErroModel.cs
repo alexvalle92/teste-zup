@@ -7,7 +7,7 @@ namespace ClientesWebAPI.Models
 {
     public class ErroModel
     {
-        public int Codigo { get; set; }
         public string Mensagem { get; set; }
+        public string StackTrace { get; set; }
     }
 }
