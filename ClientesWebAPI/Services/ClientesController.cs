@@ -77,7 +77,7 @@ namespace ClientesWebAPI.Services
                 {
                     ErroModel erro = new ErroModel()
                     {
-                        Mensagem = $"Não foi possível encontrar o usuário com o ID {id}"
+                        Mensagem = $"Não foi possível encontrar o cliente com o ID {id}"
                     };
                     return NotFound(erro);
                 }
@@ -146,13 +146,26 @@ namespace ClientesWebAPI.Services
         {
             try
             {
-                Cliente cli = new Cliente();
+                Cliente cli = null;
 
                 using (var db = new ZupContext())
                 {
-                    cliente.Id = id;
-                    db.Entry(cliente).State = EntityState.Modified;
-                    db.SaveChanges();
+                    cli = db.Cliente.Include(i => i.Telefones).Where(w => w.Id.Equals(id)).AsNoTracking().FirstOrDefault();
+                    if (cli != null)
+                    {
+                        cliente.Id = id;
+                        cliente.Senha = cli.Senha;
+                        db.Entry(cliente).State = EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        ErroModel erro = new ErroModel()
+                        {
+                            Mensagem = $"Não foi possível encontrar o cliente com o ID {id}"
+                        };
+                        return NotFound(erro);
+                    }
                 }
 
                 return Ok();
@@ -197,7 +210,7 @@ namespace ClientesWebAPI.Services
                     {
                         ErroModel erro = new ErroModel()
                         {
-                            Mensagem = $"Não foi possível encontrar o usuário com o ID {id}"
+                            Mensagem = $"Não foi possível encontrar o cliente com o ID {id}"
                         };
                         return NotFound(erro);
                     }

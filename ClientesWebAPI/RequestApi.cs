@@ -1,17 +1,18 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClientesWebAPITest
+namespace ClientesWebAPI
 {
-    internal static class RequestsApi
+    public class RequestApi
     {
-        internal static HttpClient Client = null;
-        internal static void ConfigRequest()
+        public static HttpClient Client = null;
+        public static void ConfigRequest()
         {
             Uri UrlServiceLayer = new Uri(@"https://localhost:44390/api/");
             HttpClientHandler httpClientHandler = new HttpClientHandler();
@@ -24,11 +25,11 @@ namespace ClientesWebAPITest
             Client.DefaultRequestHeaders.Add("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
         }
 
-        internal static HttpResponseMessage SendRequest(HttpMethod metodo, string url, object objeto = null)
+        public static HttpResponseMessage SendRequest(HttpMethod metodo, string url, object objeto = null)
         {
             HttpResponseMessage resposta = new HttpResponseMessage();
             HttpRequestMessage request = new HttpRequestMessage(metodo, url);
-            if(objeto != null)
+            if (objeto != null)
                 request.Content = new StringContent(JsonConvert.SerializeObject(objeto), Encoding.UTF8, "application/json");
 
             Task.Run(async () =>
@@ -47,6 +48,7 @@ namespace ClientesWebAPITest
             }).Wait();
 
             return resposta;
+
         }
     }
 }

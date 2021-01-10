@@ -38,18 +38,19 @@ namespace ClientesWebAPI.Services
         [AllowAnonymous]
         [HttpPost]
         [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
+        [ProducesResponseType(typeof(ErroModel), 404)]
         [ProducesResponseType(typeof(ErroModel), 500)]
         public IActionResult RequestToken([FromBody] AutenticacaoModel autenticacao)
         {
             try
             {
                 Cliente cli = null;
+                ErroModel erro = null;
 
                 using (var db = new ZupContext())
                 {
                     string senha = UtilsHelper.CriptografaSenha(autenticacao.Senha);
-                    cli = db.Cliente.Where(w => w.Email.Equals(autenticacao) && w.Senha.Equals(senha)).FirstOrDefault();
+                    cli = db.Cliente.Where(w => w.Email.Equals(autenticacao.Email) && w.Senha.Equals(senha)).FirstOrDefault();
                 }
 
                 if (cli != null)
@@ -76,8 +77,11 @@ namespace ClientesWebAPI.Services
                         token = new JwtSecurityTokenHandler().WriteToken(token)
                     });
                 }
-
-                return BadRequest("Email ou senha estão inválidos.");
+                erro = new ErroModel()
+                {
+                    Mensagem = "Usuário ou senha inválidos."
+                };
+                return NotFound(erro);
             } catch(Exception er)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, new ErroModel()
