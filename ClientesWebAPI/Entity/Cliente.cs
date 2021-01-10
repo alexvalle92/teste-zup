@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,6 +28,6 @@ namespace ClientesWebAPI.Entity
         [MinLength(6, ErrorMessage = "A senha deve ter um tamanho mínimo 6 caracteres")]
         public string Senha { get; set; }
 
-        public virtual ICollection<Telefone> Telefones { get; set; }
+        public List<Telefone> Telefones { get; set; }
     }
 }

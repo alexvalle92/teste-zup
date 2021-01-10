@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ClientesWebAPI.Entity;
+using ClientesWebAPI.Helpers;
 using ClientesWebAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,7 @@ namespace ClientesWebAPI.Services
 {
     [Route("api/Clientes")]
     [ApiController]
+    //[Authorize]
     public class ClientesController : ControllerBase
     {
         /// <summary>
@@ -30,7 +33,7 @@ namespace ClientesWebAPI.Services
                 List<Cliente> listCli = new List<Cliente>();
                 using (var db = new ZupContext())
                 {
-                    listCli = db.Cliente.ToList();
+                    listCli = db.Cliente.Include(i => i.Telefones).ToList();
                 }
                 return Ok(listCli);
             }
@@ -63,8 +66,7 @@ namespace ClientesWebAPI.Services
 
                 using (var db = new ZupContext())
                 {
-                    cli = db.Cliente.Where(w => w.Id.Equals(id)).FirstOrDefault();
-                    cli.Telefones = db.Telefone.Where(w => w.ClienteId.Equals(id)).ToList();
+                    cli = db.Cliente.Include(i => i.Telefones).Where(w => w.Id.Equals(id)).FirstOrDefault();
                 }
 
                 if (cli != null)
@@ -108,6 +110,7 @@ namespace ClientesWebAPI.Services
             {
                 using (var db = new ZupContext())
                 {
+                    cliente.Senha = UtilsHelper.CriptografaSenha(cliente.Senha);
                     db.Cliente.Add(cliente);
                     db.SaveChanges();
                 }
@@ -183,8 +186,7 @@ namespace ClientesWebAPI.Services
                 Cliente cli = new Cliente();
                 using (var db = new ZupContext())
                 {
-                    cli = db.Cliente.Where(w => w.Id.Equals(id)).FirstOrDefault();
-                    cli.Telefones = db.Telefone.Where(w => w.ClienteId.Equals(id)).ToList();
+                    cli = db.Cliente.Include(i => i.Telefones).Where(w => w.Id.Equals(id)).FirstOrDefault();
                     if (cli != null)
                     {
                         db.Attach(cli);

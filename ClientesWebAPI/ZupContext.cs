@@ -13,12 +13,13 @@ namespace ClientesWebAPI
         public DbSet<Cliente> Cliente { get; set; }
         public DbSet<Telefone> Telefone { get; set; }
 
-        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Cliente>()
+            .HasMany(b => b.Telefones)
+            .WithOne();
 
-            modelBuilder.Entity<Telefone>().HasKey(k => k.ClienteId);
-        }*/
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
