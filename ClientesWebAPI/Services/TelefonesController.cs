@@ -75,7 +75,7 @@ namespace ClientesWebAPI.Services
         /// <response code="200">Atualização do Telefone efetuado com sucesso</response>
         /// <response code="500">Ocorreu um erro ao atualizar o Telefone</response>
         /// <response code="400">Modelo do Telefone enviado é inválido</response>
-        /// <response code="404">Não foi possível encontrar o Telefone</response>
+        /// <response code="404">Não foi possível encontrar o Telefone ou Cliente</response>
         [HttpPut("{idCliente}/{idTelefone}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(typeof(ErroModel), 500)]
@@ -85,10 +85,31 @@ namespace ClientesWebAPI.Services
         {
             try
             {
+                bool valido = ModelState.IsValid;
                 Cliente cli = new Cliente();
+                ErroModel erro = null;
 
                 using (var db = new ZupContext())
                 {
+                    if(!db.Cliente.Where(w => w.Id.Equals(idCliente)).Any())
+                    {
+                        erro = new ErroModel()
+                        {
+                            Mensagem = $"Não foi possível encontrar o cliente com o ID {idCliente}"
+                        };
+                        return NotFound(erro);
+                    }
+
+                    if (!db.Telefone.Where(w => w.Id.Equals(idTelefone)).Any())
+                    {
+                        erro = new ErroModel()
+                        {
+                            Mensagem = $"Não foi possível encontrar o telefone com o ID {idCliente}"
+                        };
+                        return NotFound(erro);
+                    }
+
+
                     telefone.Id = idTelefone;
                     telefone.ClienteId = idCliente;
                     db.Entry(telefone).State = EntityState.Modified;
@@ -126,6 +147,7 @@ namespace ClientesWebAPI.Services
                 Telefone telefone = new Telefone();
                 using (var db = new ZupContext())
                 {
+
                     telefone = db.Telefone.Where(w => w.Id.Equals(id)).FirstOrDefault();
                     if (telefone != null)
                     {
