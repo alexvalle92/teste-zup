@@ -3,6 +3,8 @@
     [ClienteId]      INT          NOT NULL,
     [NumeroTelefone] VARCHAR (50) NOT NULL,
     CONSTRAINT [PK_Telefone_1] PRIMARY KEY CLUSTERED ([Id] ASC, [ClienteId] ASC),
-    CONSTRAINT [FK_Telefone_Cliente] FOREIGN KEY ([Id]) REFERENCES [dbo].[Cliente] ([Id])
+    CONSTRAINT [FK_Telefone_Cliente1] FOREIGN KEY ([ClienteId]) REFERENCES [dbo].[Cliente] ([Id])
 );
+
+
 

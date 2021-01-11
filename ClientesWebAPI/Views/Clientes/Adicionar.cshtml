@@ -16,7 +16,7 @@
     <!-- Default box -->
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Adicionar</h3>
+            <h3 class="card-title">Dados Pessoais</h3>
 
             <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
@@ -28,7 +28,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <label for="nome" class="col-form-label">Nome:</label>
-                    <input type="text" class="form-control" id="nome">
+                    <input type="text" class="form-control" id="nome" autofocus>
                 </div>
                 <div class="col-sm-6">
                     <label for="sobrenome" class="col-form-label">Sobrenome:</label>
@@ -47,16 +47,68 @@
                 </div>
             </div>
 
+
+
         </div>
         <!-- /.card-body -->
+        <!--<div class="card-footer">
+        <button class="btn btn-primary" onclick="DoAdicionarCliente()"><i class="fa fa-plus"></i> Adicionar Cliente</button>
+    </div>-->
+        <!-- /.card-footer-->
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Telefones</h3>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-11">
+                    <label for="telefone" class="col-form-label">Telefone:</label>
+                    <input type="text" class="form-control" id="telefone" onkeypress="KeyPressAddTelefone(event)" autofocus>
+                </div>
+
+                <div class="col-sm-1">
+                    <label for="telefone" class="col-form-label">&nbsp;</label>
+                    <button class="btn btn-secondary btn-block" onclick="AddTelefone()"><i class="fa fa-plus"></i></button>
+                </div>
+                <div class="col-sm-12">
+                    <table style="margin-top: 2rem" class="table table-striped" id="tableTelefone">
+                        <thead>
+                            <tr>
+                                <th scope="col">Telefone</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+               
+            </div>
+            
+
+        </div>
+    </div>
+
+    <div class="card">
+        <!-- /.card-body -->
         <div class="card-footer">
-            <button class="btn btn-primary" onclick="DoAdicionarCliente()"><i class="fa fa-plus"></i> Adicionar Cliente</button>
+            <button class="btn btn-primary btn-lg btn-block" onclick="DoAdicionarCliente()"><i class="fa fa-plus"></i> Adicionar Cliente</button>
         </div>
         <!-- /.card-footer-->
     </div>
 
 </section>
 <!-- /.content -->
+
+@section scripts{
 <script>
 
     function DoAdicionarCliente() {
@@ -66,17 +118,94 @@
         var senha = document.getElementById("senha");
 
         if (nome.value != "" && sobrenome.value != "" && email.value != "" && senha.value != "") {
-            var data = JSON.stringify({ Nome: nome.value, Sobrenome: sobrenome.value, Email: email.value, Senha: senha.value });
-            ChamadaAjax('@Url.Content("~/api/Clientes")', data, "POST", ReturnDoAdicionarCliente);
+            var tableTelefone = document.getElementById("tableTelefone");
+            var arrayTelefone = [];
+            var telefone;
+            for (var cont = 1; tableTelefone.rows.length > cont; cont++) {
+                telefone = { NumeroTelefone: tableTelefone.rows[cont].firstElementChild.innerHTML };
+                arrayTelefone.push(telefone);
+            }
+
+            var data = JSON.stringify({ Nome: nome.value, Sobrenome: sobrenome.value, Email: email.value, Senha: senha.value, Telefones: arrayTelefone });
+            ChamadaAjax('@Url.Action("DoAdicionarCliente","Clientes")', data, "POST", ReturnDoAdicionarCliente);
         } else {
-            alert("Preencha todos os campos");
+            if (nome.value == "") {
+                toastr.error("O campo Nome precisa ser preenchido.");
+                nome.focus();
+            } else if (sobrenome.value == "") {
+                toastr.error("O campo Sobrenome precisa ser preenchido.");
+                sobrenome.focus();
+            } else if (email.value == "") {
+                toastr.error("O campo Email precisa ser preenchido.");
+                email.focus();
+            } else if (senha.value == "") {
+                toastr.error("O campo Senha precisa ser preenchido.");
+                senha.focus();
+            }
         }
 
-        function ReturnDoAdicionarCliente() {
-            alert("Retornou");
+    }
+
+    function ReturnDoAdicionarCliente(dados) {
+        if (dados) {
+            if (dados.erro.mensagem != null && dados.erro.mensagem != "") {
+                toastr.error(dados.erro.mensagem);
+            } else {
+                toastr.success("Cliente adicionado com sucesso.");
+                LimparCampos();
+
+            }
         }
-        
+    }
+
+    function KeyPressAddTelefone(eventKey) {
+        var tecla = (eventKey.keyCode ? eventKey.keyCode : eventKey.which);
+        if (tecla === 13) {
+            AddTelefone();
+        }
+    }
+
+    function AddTelefone() {
+        var telefone = document.getElementById("telefone");
+        if (telefone.value != "") {
+            var tableTelefone = document.getElementById("tableTelefone");
+            var row = tableTelefone.insertRow(tableTelefone.rows.length);
+            row.id = tableTelefone.rows.length;
+            var cellTelefone = row.insertCell(0);
+            cellTelefone.innerHTML = telefone.value;
+
+            var cellAcoes = row.insertCell(1);
+            cellAcoes.innerHTML = "<i class='fa fa-trash' onclick='ExcluirTelefone(\""+ tableTelefone.rows.length +"\")'></i>";
+
+            telefone.value = "";
+            telefone.focus();
+        } else {
+            toastr.error("O campo Telefone deve ser preenchido para adicionar na tabela.");
+            telefone.focus();
+        }
+    }
+
+    function ExcluirTelefone(idLinha) {
+        document.getElementById(idLinha).remove();
+    }
+
+    function LimparCampos() {
+        var nome = document.getElementById("nome");
+        var sobrenome = document.getElementById("sobrenome");
+        var email = document.getElementById("email");
+        var senha = document.getElementById("senha");
+        var tableTelefone = document.getElementById("tableTelefone");
+
+        while (tableTelefone.rows.length > 1) {
+            document.getElementById(tableTelefone.rows[1].id).remove();
+        }
+
+        nome.value = "";
+        sobrenome.value = "";
+        email.value = "";
+        senha.value = "";
+        nome.focus();
     }
 
 </script>
-
+}

@@ -7,10 +7,9 @@
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="~/fonts/css/all.min.css" />
-    <!-- Theme style -->
     <link rel="stylesheet" href="~/css/adminlte.min.css" />
+    <link rel="stylesheet" href="~/css/toastr/toastr.min.css" />
 
 
 
@@ -102,7 +101,8 @@
     <script src="~/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="~/js/demo.js"></script>
+    <script src="~/js/toastr/toastr.min.js"></script>
     <script src="~/js/site.js"></script>
-
+    @RenderSection("scripts", required: false)
 </body>
 </html>

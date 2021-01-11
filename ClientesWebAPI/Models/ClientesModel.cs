@@ -11,6 +11,8 @@ namespace ClientesWebAPI.Models
         public ErroModel Erro { get; set; }
         public List<Cliente> ListaClientes { get; set; }
         public Cliente Cliente { get; set; }
+        public int IdCliente { get; set; }
+        public int IdTelefone { get; set; }
 
         public ClientesModel()
         {

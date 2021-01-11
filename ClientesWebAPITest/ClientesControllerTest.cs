@@ -16,16 +16,16 @@ namespace ClientesWebAPITest
     {
         public ClientesControllerTest()
         {
-            RequestApi.ConfigRequest();
+            RequestApi.ConfigRequest(@"https://localhost:44390/api/");
         }
 
-        /*[Fact]
+        [Fact]
         public void Get_OkResult()
         {
             HttpResponseMessage resposta = RequestApi.SendRequest(HttpMethod.Get, $"Clientes");
             Assert.Equal((int)HttpStatusCode.OK, (int)resposta.StatusCode);
         }
-
+        
         [Theory]
         [InlineData(3)]
         [InlineData(4)]
@@ -100,7 +100,7 @@ namespace ClientesWebAPITest
         {
             HttpResponseMessage resposta = RequestApi.SendRequest(HttpMethod.Delete, $"Clientes/{id}");
             Assert.Equal((int)HttpStatusCode.NotFound, (int)resposta.StatusCode);
-        }*/
+        }
 
 
 

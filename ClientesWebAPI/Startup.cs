@@ -34,7 +34,7 @@ namespace ClientesWebAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Automação API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Zup API", Version = "v1" });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -86,11 +86,13 @@ namespace ClientesWebAPI
                 app.UseHsts();
             }
 
+            RequestApi.ConfigRequest(Configuration["UrlApi"]);
+
             /* SWAGGER */
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("swagger/v1/swagger.json", "Automação API V1");
+                c.SwaggerEndpoint("swagger/v1/swagger.json", "Zup API V1");
                 c.RoutePrefix = string.Empty;
             });
 
@@ -106,7 +108,7 @@ namespace ClientesWebAPI
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Clientes}/{action=Gerenciar}/{id?}");
             });
 
             app.UseAuthentication();

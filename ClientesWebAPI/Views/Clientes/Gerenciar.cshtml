@@ -40,18 +40,18 @@
                     @{
                         foreach (Cliente row in Model.ListaClientes)
                         {
-                                        <tr>
-                                            <th scope="row">@row.Id</th>
-                                            <td>@row.Nome</td>
-                                            <td>@row.Sobrenome</td>
-                                            <td>@row.Email</td>
-                                            <td><a href="@Url.Action("Editar", "Clientes", new { idCliente = row.Id })"><i class="fa fa-pencil-alt" ></i></a> &nbsp; <a href="#"><i class="fa fa-trash" onclick="DoExcluirCliente(@row.Id)"></i></a></td>
-                                        </tr>
+                            <tr id="cliente_@row.Id">
+                                <th scope="row">@row.Id</th>
+                                <td>@row.Nome</td>
+                                <td>@row.Sobrenome</td>
+                                <td>@row.Email</td>
+                                <td><a href="@Url.Action("Editar", "Clientes", new { idCliente = row.Id })"><i class="fa fa-pencil-alt"></i></a> &nbsp; <a href="#"><i class="fa fa-trash" onclick="DoExcluirCliente(@row.Id)"></i></a></td>
+                            </tr>
                         }
                     }
                 </tbody>
             </table>
-            
+
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
@@ -62,23 +62,39 @@
 
 </section>
 <!-- /.content -->
+@section scripts{
 <script>
-
+    $(function () {
+        var mensagemErro = '@Model.Erro.Mensagem';
+        if (mensagemErro != null && mensagemErro != "") {
+            toastr.error(mensagemErro);
+        }
+    });
     function DoExcluirCliente(idCliente) {
-        @*'@Url.Content("~/producao/materiaprima")'*@
+
+        @*
         var data = JSON.stringify({  });
         ChamadaAjax('@Url.Content("~/api/Clientes/")' + idCliente, data, "DELETE", ReturnDoExcluirCliente);
+        *@
+
+        var data = JSON.stringify({ IdCliente: idCliente });
+        ChamadaAjax('@Url.Action("DoExcluirCliente","Clientes")', data, "POST", ReturnDoExcluirCliente);
+
     }
 
     function ReturnDoExcluirCliente(dados) {
-        alert("Registro excluido com sucesso");
+        if (dados) {
+            if (dados.erro.mensagem != null && dados.erro.mensagem != "") {
+                toastr.error(dados.erro.mensagem);
+            } else {
+                toastr.success("Cliente excluído com sucesso.");
+
+                document.getElementById("cliente_" + dados.idCliente).remove();
+            }
+        }
     }
 
-    function DoEditar(idCliente) {
-        alert("Retornou " + idCliente);
-        @*'@Url.Content("~/producao/materiaprima")'*@
-        
-    }
 
 </script>
+}
 

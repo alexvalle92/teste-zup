@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +11,18 @@ using System.Threading.Tasks;
 
 namespace ClientesWebAPI
 {
-    public class RequestApi
+    public class RequestApi : ControllerBase
     {
         public static HttpClient Client = null;
-        public static void ConfigRequest()
+        public static IConfiguration _configuration;
+        public RequestApi(IConfiguration configuration)
         {
-            Uri UrlServiceLayer = new Uri(@"https://localhost:44390/api/");
+            _configuration = configuration;
+        }
+        public static void ConfigRequest(string urlApi)
+        {
+            //Uri UrlServiceLayer = new Uri(@"https://localhost:44390/api/");
+            Uri UrlServiceLayer = new Uri(urlApi);
             HttpClientHandler httpClientHandler = new HttpClientHandler();
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
 

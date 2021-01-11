@@ -14,7 +14,7 @@ namespace ClientesWebAPITest
     {
         public TokenControllerTest()
         {
-            RequestApi.ConfigRequest();
+            RequestApi.ConfigRequest(@"https://localhost:44390/api/");
         }
 
         [Theory]

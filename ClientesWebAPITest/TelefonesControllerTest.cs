@@ -22,10 +22,10 @@ namespace ClientesWebAPITest
 
         public TelefonesControllerTest()
         {
-            RequestApi.ConfigRequest();
+            RequestApi.ConfigRequest(@"https://localhost:44390/api/");
         }
 
-        /*[Theory]
+        [Theory]
         [ClassData(typeof(TelefoneDataCorreta))]
         public void Put_OkResult(Telefone telefone)
         {
@@ -82,7 +82,7 @@ namespace ClientesWebAPITest
             HttpResponseMessage resposta = RequestApi.SendRequest(HttpMethod.Delete, $"Telefones/{id}");
             Assert.Equal((int)HttpStatusCode.OK, (int)resposta.StatusCode);
         }
-        */
+        
         #region Dados para testes
         public class TelefoneDataCorreta : IEnumerable<object[]>
         {
