@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -86,7 +87,13 @@ namespace ClientesWebAPI
                 app.UseHsts();
             }
 
-            RequestApi.ConfigRequest(Configuration["UrlApi"]);
+            app.Use(async (context, next) => {
+                //Do what you want with context,which is HttpContext
+                await next.Invoke();
+                string url = context.Request.Scheme + "://" + context.Request.Host + "/api/";
+                RequestApi.ConfigRequest(url);
+            });
+
 
             /* SWAGGER */
             app.UseSwagger();
